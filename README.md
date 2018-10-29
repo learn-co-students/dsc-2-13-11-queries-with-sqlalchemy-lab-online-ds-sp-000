@@ -559,6 +559,8 @@ In the cell below:
 * You'll need to make use a join table to solve this one--be sure to take a look at the ERD diagram again if needed!
 * Store your results in a DataFrame and display the head to ensure that everything worked correctly.
 
+**_NOTE:_** For long SQL statements, consider using the multiline string format in python, denoted by `"""three quotes"""` at the beginning and end.  Note that if you hit enter to move to another line, be sure to add an `\` character at the end of the line to escape it--otherwise, your sql statements will contain `\n` newline characters wherever you hit enter to move to the next line.  
+
 
 ```python
 q = """SELECT LastName, FirstName, COUNT(*) as TerritoriesAssigned from \
