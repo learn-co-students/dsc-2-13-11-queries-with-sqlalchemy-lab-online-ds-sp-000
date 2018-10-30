@@ -7,18 +7,18 @@ In this lesson, we'll learn how to use SQLAlchemy to write queries about Microso
 
 ## Objectives
 
-You will learn how to:
+You will be able to:
 
 * Read and understand an ERD diagram
 * Create queries with SQLAlchemy, including queries that involve many-to-many relationships
 
-### Getting Started
+## Getting Started
 
 In order to complete this lab, we'll need to download a SQLite3-compatible version of the _Northwind Traders_ database from Microsoft.  Microsoft built this database back in the year 2000 to help showcase their SQL Server technology. Since then, it has been open-sourced and has become a great practice tool for every new generation of SQL learners. 
 
 Lucky for us, some generous programmers have already converted the Northwind database to a sqlite-compatible version and posted it on Github. We've already included the file the SQL database file that we'll be working with in the repo for this folder, along with the following ERD Diagram. However, if you would like to work with the larger version of this dataset at a future time, just clone [this repo](https://github.com/jpwhite3/northwind-SQLite3) and follow their instructions to access it!
 
-### ERD Diagram For Northwind Traders
+## ERD Diagram For Northwind Traders
 
 The following ERD Diagram describes the Northwind Traders Database:
 
@@ -26,7 +26,7 @@ The following ERD Diagram describes the Northwind Traders Database:
 
 If the text seems a bit hard to read inside this jupyter notebook, just go into the folder for this repo and open the `Northwind_ERD.png` file manually to see it full size. 
 
-### Connecting to the Database
+## Connecting to the Database
 
 The first thing we'll need to do is connect to the Northwind Traders database, which can be found in the file `Northwind_small.sqlite`.
 
@@ -45,7 +45,7 @@ Session = None
 session = None
 ```
 
-### Get Table Names and Table Information
+## Get Table Names and Table Information
 
 One of the most useful things we can do when working with a new database is to inspect the tables until we have a solid idea of what we're looking at.  As you work through this lab, you'll notice that there are some small discrepancies between the Table/Column names listed in the ERD and what they are actually are in the database.  This may be annoying, but this is not an accident--sometimes, documentation is wrong!  By learning how to inspect what tables exist in a database, as well as how which columns exist inside a table, we can save ourselves a lot of headaches by double checking. 
 
@@ -121,7 +121,7 @@ Name: Photo 	 Type: BLOB
 Name: Notes 	 Type: VARCHAR(8000)
 Name: ReportsTo 	 Type: INTEGER
 Name: PhotoPath 	 Type: VARCHAR(8000)
-### Connecting and Executing Raw SQL Statements
+## Connecting and Executing Raw SQL Statements
 
 Sometimes, the easiest thing for us to do is to just execute a raw SQL statement.  This is very easy with SQLAlchemy--we just need to establish a connection, and then use the appropriat methods to execute SQL statements!
 
@@ -141,7 +141,7 @@ print(None)
 # Expected Output:
 
 [('ALFKI', 'Alfreds Futterkiste', 'Maria Anders', 'Sales Representative', 'Obere Str. 57', 'Berlin', 'Western Europe', '12209', 'Germany', '030-0074321', '030-0076545'), ('ANATR', 'Ana Trujillo Emparedados y helados', 'Ana Trujillo', 'Owner', 'Avda. de la Constitución 2222', 'México D.F.', 'Central America', '05021', 'Mexico', '(5) 555-4729', '(5) 555-3745'), ('ANTON', 'Antonio Moreno Taquería', 'Antonio Moreno', 'Owner', 'Mataderos  2312', 'México D.F.', 'Central America', '05023', 'Mexico', '(5) 555-3932', None), ('AROUT', 'Around the Horn', 'Thomas Hardy', 'Sales Representative', '120 Hanover Sq.', 'London', 'British Isles', 'WA1 1DP', 'UK', '(171) 555-7788', '(171) 555-6750'), ('BERGS', 'Berglunds snabbköp', 'Christina Berglund', 'Order Administrator', 'Berguvsvägen  8', 'Luleå', 'Northern Europe', 'S-958 22', 'Sweden', '0921-12 34 65', '0921-12 34 67')]
-### Incorporating Pandas DataFrames
+## Incorporating Pandas DataFrames
 
 So far we've been able to easily connect to a SQL database, inspect the tables, and execute queries. However, the results returned from queries haven't been in an easily readable format.  We'll fix that by taking the results and storing it in a pandas DataFrame!
 
@@ -163,7 +163,7 @@ df.head()
 
 Nice! We can now read our results.  However, the columns of our DataFrame aren't labeled.  Luckily, pandas plays nicely with the sqlalchemy library, and can actually execute sql queries!
 
-#### Writing Queries with Pandas
+### Writing Queries with Pandas
 
 In the cell below:
 
@@ -179,7 +179,7 @@ df.head()
 
 Great! As we can see from the output above, when we let pandas execute the SQL query for us, the DataFrame now contains columns with the correct labels. This is a great way to execute SQL while still making sure our results are easy to read and manipulate by using DataFrames!
 
-### Executing JOIN Statements
+## Executing JOIN Statements
 
 Let's try executing a JOIN statement inside `pd.read_sql_query`.
 
@@ -196,13 +196,13 @@ df = None
 df.head()
 ```
 
-#### Expected Output
+### Expected Output
 
 <img src='join_results.png'>
 
 Great job! Let's see if we can execute a join that includes entities with a many-to-many relationship.
 
-#### JOINs with Many-To-Many Relationships
+### JOINs with Many-To-Many Relationships
 
 In the cell below:
 
@@ -228,13 +228,13 @@ df2.head()
 
 Great job! You've demonstrated proficiency using raw sql with SQLAlchemy. However, we haven't yet touched all the fun declarative stuff.  Let's get some practice working with SQLAlchemy `session` objects below!
 
-### Using SQLAlchemy Sessions
+## Using SQLAlchemy Sessions
 
 So far, we've just been using SQLAlchemy as a way to connect to a database and run SQL queries. However, SQLAlchemy is an **_Object-Relational Mapper_**, and can map entities in our database to python objects! This can be incredibly helpful when we need to incorporate data from our database into an object-oriented program or model. 
 
 Let's start by getting some practice with `session` objects, because that's where all the magic happens.
 
-#### Using `.query` Objects
+### Using `.query` Objects
 
 Recall that we created a `session` object at the beginning of this lab by using SQLAlchemy's `sessionmaker` function and binding it to our `engine` object.  We haven't used our `session` object too much thus far, but now we'll use it for queries!
 
@@ -269,7 +269,7 @@ Employee, Customer = None, None
 
 Now that we have some mappings set up, we can make use of `session.query()` help us query our database!
 
-#### Writing Basic Queries
+### Writing Basic Queries
 
 Let's use the `query()` object to get all the employees from the `'Employee'` table. 
 
@@ -279,7 +279,7 @@ In the cell below:
 * Order the results by the Employee's `.HireDate` attribute.
 * Print the last name, first name, and hire date of each employee. 
 
-#### Implcit JOINs using `.filter()`
+### Implicit JOINs using `.filter()`
 
 One great benefit of using `session.query()` to query our data is that we can easiy execute **_implicit joins_** by making use of the `.filter()` method. 
 
@@ -302,6 +302,6 @@ Now, in the cell below:
 * Use the `.filter()` method to only include cases where the Product's `.CategoryID` matches the Category's `.Id` attribute.
 * Print out the name of each product, followed by the name of the category that it belongs to. 
 
-# Conclusion
+## Summary
 
 Great job! You've just used SQLAlchemy to work with a sample production database. Note that there are many, many more awesome things that SQLAlchemy can do, but they're outside the scope of this lesson.  However, if you're interested in learning more, don't be afraid to take a look at the [SQLAlchemy documentation](https://docs.sqlalchemy.org/en/latest/orm/tutorial.html) and work through some tutorials in your spare time!
