@@ -1,5 +1,5 @@
 
-# Querying With SQLAlchemy
+# Querying with SQLAlchemy - Lab
 
 ## Introduction
 
@@ -7,18 +7,18 @@ In this lesson, we'll learn how to use SQLAlchemy to write queries about Microso
 
 ## Objectives
 
-You will learn how to:
+You will be able to:
 
 * Read and understand an ERD diagram
 * Create queries with SQLAlchemy, including queries that involve many-to-many relationships
 
-### Getting Started
+## Getting Started
 
 In order to complete this lab, we'll need to download a SQLite3-compatible version of the _Northwind Traders_ database from Microsoft.  Microsoft built this database back in the year 2000 to help showcase their SQL Server technology. Since then, it has been open-sourced and has become a great practice tool for every new generation of SQL learners. 
 
 Lucky for us, some generous programmers have already converted the Northwind database to a sqlite-compatible version and posted it on Github. We've already included the file the SQL database file that we'll be working with in the repo for this folder, along with the following ERD Diagram. However, if you would like to work with the larger version of this dataset at a future time, just clone [this repo](https://github.com/jpwhite3/northwind-SQLite3) and follow their instructions to access it!
 
-### ERD Diagram For Northwind Traders
+## ERD Diagram For Northwind Traders
 
 The following ERD Diagram describes the Northwind Traders Database:
 
@@ -26,7 +26,7 @@ The following ERD Diagram describes the Northwind Traders Database:
 
 If the text seems a bit hard to read inside this jupyter notebook, just go into the folder for this repo and open the `Northwind_ERD.png` file manually to see it full size. 
 
-### Connecting to the Database
+## Connecting to the Database
 
 The first thing we'll need to do is connect to the Northwind Traders database, which can be found in the file `Northwind_small.sqlite`.
 
@@ -45,7 +45,7 @@ Session = sessionmaker(bind=engine)
 session = Session()
 ```
 
-### Get Table Names and Table Information
+## Get Table Names and Table Information
 
 One of the most useful things we can do when working with a new database is to inspect the tables until we have a solid idea of what we're looking at.  As you work through this lab, you'll notice that there are some small discrepancies between the Table/Column names listed in the ERD and what they are actually are in the database.  This may be annoying, but this is not an accident--sometimes, documentation is wrong!  By learning how to inspect what tables exist in a database, as well as how which columns exist inside a table, we can save ourselves a lot of headaches by double checking. 
 
@@ -65,19 +65,19 @@ print(inspector.get_table_names())
 ```
 
     2018-10-28 20:59:25,655 INFO sqlalchemy.engine.base.Engine SELECT name FROM sqlite_master WHERE type='table' ORDER BY name
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT name FROM sqlite_master WHERE type='table' ORDER BY name
-    
+
 
     2018-10-28 20:59:25,658 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     ['Category', 'Customer', 'CustomerCustomerDemo', 'CustomerDemographic', 'Employee', 'EmployeeTerritory', 'Order', 'OrderDetail', 'Product', 'Region', 'Shipper', 'Supplier', 'Territory']
-    
+
 
 Great! We can now see exactly what each Table is named. 
 
@@ -99,7 +99,7 @@ print(inspector.get_columns('Employee'))
 ```
 
     [{'name': 'Id', 'type': INTEGER(), 'nullable': True, 'default': None, 'autoincrement': 'auto', 'primary_key': 1}, {'name': 'LastName', 'type': VARCHAR(length=8000), 'nullable': True, 'default': None, 'autoincrement': 'auto', 'primary_key': 0}, {'name': 'FirstName', 'type': VARCHAR(length=8000), 'nullable': True, 'default': None, 'autoincrement': 'auto', 'primary_key': 0}, {'name': 'Title', 'type': VARCHAR(length=8000), 'nullable': True, 'default': None, 'autoincrement': 'auto', 'primary_key': 0}, {'name': 'TitleOfCourtesy', 'type': VARCHAR(length=8000), 'nullable': True, 'default': None, 'autoincrement': 'auto', 'primary_key': 0}, {'name': 'BirthDate', 'type': VARCHAR(length=8000), 'nullable': True, 'default': None, 'autoincrement': 'auto', 'primary_key': 0}, {'name': 'HireDate', 'type': VARCHAR(length=8000), 'nullable': True, 'default': None, 'autoincrement': 'auto', 'primary_key': 0}, {'name': 'Address', 'type': VARCHAR(length=8000), 'nullable': True, 'default': None, 'autoincrement': 'auto', 'primary_key': 0}, {'name': 'City', 'type': VARCHAR(length=8000), 'nullable': True, 'default': None, 'autoincrement': 'auto', 'primary_key': 0}, {'name': 'Region', 'type': VARCHAR(length=8000), 'nullable': True, 'default': None, 'autoincrement': 'auto', 'primary_key': 0}, {'name': 'PostalCode', 'type': VARCHAR(length=8000), 'nullable': True, 'default': None, 'autoincrement': 'auto', 'primary_key': 0}, {'name': 'Country', 'type': VARCHAR(length=8000), 'nullable': True, 'default': None, 'autoincrement': 'auto', 'primary_key': 0}, {'name': 'HomePhone', 'type': VARCHAR(length=8000), 'nullable': True, 'default': None, 'autoincrement': 'auto', 'primary_key': 0}, {'name': 'Extension', 'type': VARCHAR(length=8000), 'nullable': True, 'default': None, 'autoincrement': 'auto', 'primary_key': 0}, {'name': 'Photo', 'type': BLOB(), 'nullable': True, 'default': None, 'autoincrement': 'auto', 'primary_key': 0}, {'name': 'Notes', 'type': VARCHAR(length=8000), 'nullable': True, 'default': None, 'autoincrement': 'auto', 'primary_key': 0}, {'name': 'ReportsTo', 'type': INTEGER(), 'nullable': True, 'default': None, 'autoincrement': 'auto', 'primary_key': 0}, {'name': 'PhotoPath', 'type': VARCHAR(length=8000), 'nullable': True, 'default': None, 'autoincrement': 'auto', 'primary_key': 0}]
-    
+
 
 That output is good, but its a bit messy. Let's write a function that makes it a bit more readable, and only tells us what we need to know. 
 
@@ -139,7 +139,7 @@ get_columns_info('Employee')
     Name: Notes 	 Type: VARCHAR(8000)
     Name: ReportsTo 	 Type: INTEGER
     Name: PhotoPath 	 Type: VARCHAR(8000)
-    
+
 # Expected Output:
 
 Table Name: Employee
@@ -162,7 +162,7 @@ Name: Photo 	 Type: BLOB
 Name: Notes 	 Type: VARCHAR(8000)
 Name: ReportsTo 	 Type: INTEGER
 Name: PhotoPath 	 Type: VARCHAR(8000)
-### Connecting and Executing Raw SQL Statements
+## Connecting and Executing Raw SQL Statements
 
 Sometimes, the easiest thing for us to do is to just execute a raw SQL statement.  This is very easy with SQLAlchemy--we just need to establish a connection, and then use the appropriat methods to execute SQL statements!
 
@@ -181,23 +181,23 @@ print(rs.fetchall())
 ```
 
     2018-10-28 21:14:50,541 INFO sqlalchemy.engine.base.Engine SELECT * FROM Customer LIMIT 5
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT * FROM Customer LIMIT 5
-    
+
 
     2018-10-28 21:14:50,543 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     [('ALFKI', 'Alfreds Futterkiste', 'Maria Anders', 'Sales Representative', 'Obere Str. 57', 'Berlin', 'Western Europe', '12209', 'Germany', '030-0074321', '030-0076545'), ('ANATR', 'Ana Trujillo Emparedados y helados', 'Ana Trujillo', 'Owner', 'Avda. de la Constitución 2222', 'México D.F.', 'Central America', '05021', 'Mexico', '(5) 555-4729', '(5) 555-3745'), ('ANTON', 'Antonio Moreno Taquería', 'Antonio Moreno', 'Owner', 'Mataderos  2312', 'México D.F.', 'Central America', '05023', 'Mexico', '(5) 555-3932', None), ('AROUT', 'Around the Horn', 'Thomas Hardy', 'Sales Representative', '120 Hanover Sq.', 'London', 'British Isles', 'WA1 1DP', 'UK', '(171) 555-7788', '(171) 555-6750'), ('BERGS', 'Berglunds snabbköp', 'Christina Berglund', 'Order Administrator', 'Berguvsvägen  8', 'Luleå', 'Northern Europe', 'S-958 22', 'Sweden', '0921-12 34 65', '0921-12 34 67')]
-    
+
 # Expected Output:
 
 [('ALFKI', 'Alfreds Futterkiste', 'Maria Anders', 'Sales Representative', 'Obere Str. 57', 'Berlin', 'Western Europe', '12209', 'Germany', '030-0074321', '030-0076545'), ('ANATR', 'Ana Trujillo Emparedados y helados', 'Ana Trujillo', 'Owner', 'Avda. de la Constitución 2222', 'México D.F.', 'Central America', '05021', 'Mexico', '(5) 555-4729', '(5) 555-3745'), ('ANTON', 'Antonio Moreno Taquería', 'Antonio Moreno', 'Owner', 'Mataderos  2312', 'México D.F.', 'Central America', '05023', 'Mexico', '(5) 555-3932', None), ('AROUT', 'Around the Horn', 'Thomas Hardy', 'Sales Representative', '120 Hanover Sq.', 'London', 'British Isles', 'WA1 1DP', 'UK', '(171) 555-7788', '(171) 555-6750'), ('BERGS', 'Berglunds snabbköp', 'Christina Berglund', 'Order Administrator', 'Berguvsvägen  8', 'Luleå', 'Northern Europe', 'S-958 22', 'Sweden', '0921-12 34 65', '0921-12 34 67')]
-### Incorporating Pandas DataFrames
+## Incorporating Pandas DataFrames
 
 So far we've been able to easily connect to a SQL database, inspect the tables, and execute queries. However, the results returned from queries haven't been in an easily readable format.  We'll fix that by taking the results and storing it in a pandas DataFrame!
 
@@ -217,16 +217,16 @@ df.head()
 ```
 
     2018-10-28 21:19:27,831 INFO sqlalchemy.engine.base.Engine SELECT firstname, lastname, title from Employee
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT firstname, lastname, title from Employee
-    
+
 
     2018-10-28 21:19:27,833 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
 
 
@@ -293,7 +293,7 @@ df.head()
 
 Nice! We can now read our results.  However, the columns of our DataFrame aren't labeled.  Luckily, pandas plays nicely with the sqlalchemy library, and can actually execute sql queries!
 
-#### Writing Queries with Pandas
+### Writing Queries with Pandas
 
 In the cell below:
 
@@ -308,16 +308,16 @@ df.head()
 ```
 
     2018-10-28 21:22:58,764 INFO sqlalchemy.engine.base.Engine SELECT * FROM [Order] WHERE CUSTOMERId = 'VINET'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT * FROM [Order] WHERE CUSTOMERId = 'VINET'
-    
+
 
     2018-10-28 21:22:58,766 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
 
 
@@ -450,7 +450,7 @@ df.head()
 
 Great! As we can see from the output above, when we let pandas execute the SQL query for us, the DataFrame now contains columns with the correct labels. This is a great way to execute SQL while still making sure our results are easy to read and manipulate by using DataFrames!
 
-### Executing JOIN Statements
+## Executing JOIN Statements
 
 Let's try executing a JOIN statement inside `pd.read_sql_query`.
 
@@ -469,16 +469,16 @@ df.head()
 ```
 
     2018-10-28 21:26:44,542 INFO sqlalchemy.engine.base.Engine SELECT o.ID, c.CompanyName, Count(*) num_orders FROM [Order] o INNER JOIN Customer c on o.CustomerID = c.ID GROUP BY c.CompanyName ORDER BY num_orders DESC
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT o.ID, c.CompanyName, Count(*) num_orders FROM [Order] o INNER JOIN Customer c on o.CustomerID = c.ID GROUP BY c.CompanyName ORDER BY num_orders DESC
-    
+
 
     2018-10-28 21:26:44,544 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
 
 
@@ -543,13 +543,13 @@ df.head()
 
 
 
-#### Expected Output
+### Expected Output
 
 <img src='join_results.png'>
 
 Great job! Let's see if we can execute a join that includes entities with a many-to-many relationship.
 
-#### JOINs with Many-To-Many Relationships
+### JOINs with Many-To-Many Relationships
 
 In the cell below:
 
@@ -574,16 +574,16 @@ df2.head()
 ```
 
     2018-10-28 21:31:57,925 INFO sqlalchemy.engine.base.Engine SELECT LastName, FirstName, COUNT(*) as TerritoriesAssigned from Employee JOIN EmployeeTerritory et on Employee.Id = et.employeeId GROUP BY Employee.lastname ORDER BY TerritoriesAssigned DESC
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT LastName, FirstName, COUNT(*) as TerritoriesAssigned from Employee JOIN EmployeeTerritory et on Employee.Id = et.employeeId GROUP BY Employee.lastname ORDER BY TerritoriesAssigned DESC
-    
+
 
     2018-10-28 21:31:57,927 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
 
 
@@ -654,13 +654,13 @@ df2.head()
 
 Great job! You've demonstrated proficiency using raw sql with SQLAlchemy. However, we haven't yet touched all the fun declarative stuff.  Let's get some practice working with SQLAlchemy `session` objects below!
 
-### Using SQLAlchemy Sessions
+## Using SQLAlchemy Sessions
 
 So far, we've just been using SQLAlchemy as a way to connect to a database and run SQL queries. However, SQLAlchemy is an **_Object-Relational Mapper_**, and can map entities in our database to python objects! This can be incredibly helpful when we need to incorporate data from our database into an object-oriented program or model. 
 
 Let's start by getting some practice with `session` objects, because that's where all the magic happens.
 
-#### Using `.query` Objects
+### Using `.query` Objects
 
 Recall that we created a `session` object at the beginning of this lab by using SQLAlchemy's `sessionmaker` function and binding it to our `engine` object.  We haven't used our `session` object too much thus far, but now we'll use it for queries!
 
@@ -695,1184 +695,1184 @@ Employee, Customer = Base.classes.Employee, Base.classes.Customer
 ```
 
     2018-10-28 22:19:08,162 INFO sqlalchemy.engine.base.Engine SELECT name FROM sqlite_master WHERE type='table' ORDER BY name
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT name FROM sqlite_master WHERE type='table' ORDER BY name
-    
+
 
     2018-10-28 22:19:08,163 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,176 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("Category")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA table_info("Category")
-    
+
 
     2018-10-28 22:19:08,177 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,180 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Category' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Category' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,183 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,185 INFO sqlalchemy.engine.base.Engine PRAGMA foreign_key_list("Category")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA foreign_key_list("Category")
-    
+
 
     2018-10-28 22:19:08,187 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,188 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Category' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Category' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,189 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,194 INFO sqlalchemy.engine.base.Engine PRAGMA index_list("Category")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA index_list("Category")
-    
+
 
     2018-10-28 22:19:08,195 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,197 INFO sqlalchemy.engine.base.Engine PRAGMA index_list("Category")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA index_list("Category")
-    
+
 
     2018-10-28 22:19:08,198 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,200 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Category' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Category' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,201 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,204 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("Customer")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA table_info("Customer")
-    
+
 
     2018-10-28 22:19:08,206 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,208 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Customer' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Customer' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,209 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,211 INFO sqlalchemy.engine.base.Engine PRAGMA foreign_key_list("Customer")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA foreign_key_list("Customer")
-    
+
 
     2018-10-28 22:19:08,212 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,214 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Customer' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Customer' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,215 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,216 INFO sqlalchemy.engine.base.Engine PRAGMA index_list("Customer")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA index_list("Customer")
-    
+
 
     2018-10-28 22:19:08,217 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,219 INFO sqlalchemy.engine.base.Engine PRAGMA index_list("Customer")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA index_list("Customer")
-    
+
 
     2018-10-28 22:19:08,220 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,221 INFO sqlalchemy.engine.base.Engine PRAGMA index_info("sqlite_autoindex_Customer_1")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA index_info("sqlite_autoindex_Customer_1")
-    
+
 
     2018-10-28 22:19:08,222 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,224 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Customer' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Customer' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,225 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,227 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("CustomerCustomerDemo")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA table_info("CustomerCustomerDemo")
-    
+
 
     2018-10-28 22:19:08,228 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,229 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'CustomerCustomerDemo' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'CustomerCustomerDemo' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,230 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,232 INFO sqlalchemy.engine.base.Engine PRAGMA foreign_key_list("CustomerCustomerDemo")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA foreign_key_list("CustomerCustomerDemo")
-    
+
 
     2018-10-28 22:19:08,233 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,234 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'CustomerCustomerDemo' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'CustomerCustomerDemo' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,236 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,237 INFO sqlalchemy.engine.base.Engine PRAGMA index_list("CustomerCustomerDemo")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA index_list("CustomerCustomerDemo")
-    
+
 
     2018-10-28 22:19:08,238 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,239 INFO sqlalchemy.engine.base.Engine PRAGMA index_list("CustomerCustomerDemo")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA index_list("CustomerCustomerDemo")
-    
+
 
     2018-10-28 22:19:08,240 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,242 INFO sqlalchemy.engine.base.Engine PRAGMA index_info("sqlite_autoindex_CustomerCustomerDemo_1")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA index_info("sqlite_autoindex_CustomerCustomerDemo_1")
-    
+
 
     2018-10-28 22:19:08,243 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,244 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'CustomerCustomerDemo' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'CustomerCustomerDemo' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,245 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,247 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("CustomerDemographic")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA table_info("CustomerDemographic")
-    
+
 
     2018-10-28 22:19:08,248 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,250 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'CustomerDemographic' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'CustomerDemographic' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,251 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,252 INFO sqlalchemy.engine.base.Engine PRAGMA foreign_key_list("CustomerDemographic")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA foreign_key_list("CustomerDemographic")
-    
+
 
     2018-10-28 22:19:08,253 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,254 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'CustomerDemographic' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'CustomerDemographic' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,255 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,257 INFO sqlalchemy.engine.base.Engine PRAGMA index_list("CustomerDemographic")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA index_list("CustomerDemographic")
-    
+
 
     2018-10-28 22:19:08,258 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,259 INFO sqlalchemy.engine.base.Engine PRAGMA index_list("CustomerDemographic")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA index_list("CustomerDemographic")
-    
+
 
     2018-10-28 22:19:08,260 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,261 INFO sqlalchemy.engine.base.Engine PRAGMA index_info("sqlite_autoindex_CustomerDemographic_1")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA index_info("sqlite_autoindex_CustomerDemographic_1")
-    
+
 
     2018-10-28 22:19:08,263 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,264 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'CustomerDemographic' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'CustomerDemographic' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,265 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,267 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("Employee")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA table_info("Employee")
-    
+
 
     2018-10-28 22:19:08,268 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,270 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Employee' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Employee' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,271 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,273 INFO sqlalchemy.engine.base.Engine PRAGMA foreign_key_list("Employee")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA foreign_key_list("Employee")
-    
+
 
     2018-10-28 22:19:08,274 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,275 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Employee' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Employee' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,276 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,277 INFO sqlalchemy.engine.base.Engine PRAGMA index_list("Employee")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA index_list("Employee")
-    
+
 
     2018-10-28 22:19:08,278 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,280 INFO sqlalchemy.engine.base.Engine PRAGMA index_list("Employee")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA index_list("Employee")
-    
+
 
     2018-10-28 22:19:08,281 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,282 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Employee' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Employee' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,283 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,285 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("EmployeeTerritory")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA table_info("EmployeeTerritory")
-    
+
 
     2018-10-28 22:19:08,286 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,287 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'EmployeeTerritory' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'EmployeeTerritory' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,288 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,290 INFO sqlalchemy.engine.base.Engine PRAGMA foreign_key_list("EmployeeTerritory")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA foreign_key_list("EmployeeTerritory")
-    
+
 
     2018-10-28 22:19:08,291 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,293 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'EmployeeTerritory' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'EmployeeTerritory' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,294 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,295 INFO sqlalchemy.engine.base.Engine PRAGMA index_list("EmployeeTerritory")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA index_list("EmployeeTerritory")
-    
+
 
     2018-10-28 22:19:08,296 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,298 INFO sqlalchemy.engine.base.Engine PRAGMA index_list("EmployeeTerritory")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA index_list("EmployeeTerritory")
-    
+
 
     2018-10-28 22:19:08,299 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,300 INFO sqlalchemy.engine.base.Engine PRAGMA index_info("sqlite_autoindex_EmployeeTerritory_1")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA index_info("sqlite_autoindex_EmployeeTerritory_1")
-    
+
 
     2018-10-28 22:19:08,301 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,302 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'EmployeeTerritory' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'EmployeeTerritory' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,303 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,305 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("Order")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA table_info("Order")
-    
+
 
     2018-10-28 22:19:08,306 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,308 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Order' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Order' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,309 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,310 INFO sqlalchemy.engine.base.Engine PRAGMA foreign_key_list("Order")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA foreign_key_list("Order")
-    
+
 
     2018-10-28 22:19:08,312 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,313 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Order' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Order' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,314 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,315 INFO sqlalchemy.engine.base.Engine PRAGMA index_list("Order")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA index_list("Order")
-    
+
 
     2018-10-28 22:19:08,316 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,318 INFO sqlalchemy.engine.base.Engine PRAGMA index_list("Order")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA index_list("Order")
-    
+
 
     2018-10-28 22:19:08,319 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,320 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Order' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Order' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,321 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,322 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("OrderDetail")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA table_info("OrderDetail")
-    
+
 
     2018-10-28 22:19:08,323 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,325 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'OrderDetail' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'OrderDetail' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,326 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,328 INFO sqlalchemy.engine.base.Engine PRAGMA foreign_key_list("OrderDetail")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA foreign_key_list("OrderDetail")
-    
+
 
     2018-10-28 22:19:08,329 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,330 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'OrderDetail' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'OrderDetail' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,331 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,332 INFO sqlalchemy.engine.base.Engine PRAGMA index_list("OrderDetail")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA index_list("OrderDetail")
-    
+
 
     2018-10-28 22:19:08,333 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,335 INFO sqlalchemy.engine.base.Engine PRAGMA index_list("OrderDetail")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA index_list("OrderDetail")
-    
+
 
     2018-10-28 22:19:08,335 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,337 INFO sqlalchemy.engine.base.Engine PRAGMA index_info("sqlite_autoindex_OrderDetail_1")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA index_info("sqlite_autoindex_OrderDetail_1")
-    
+
 
     2018-10-28 22:19:08,338 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,339 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'OrderDetail' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'OrderDetail' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,340 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,342 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("Product")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA table_info("Product")
-    
+
 
     2018-10-28 22:19:08,343 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,345 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Product' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Product' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,346 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,348 INFO sqlalchemy.engine.base.Engine PRAGMA foreign_key_list("Product")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA foreign_key_list("Product")
-    
+
 
     2018-10-28 22:19:08,349 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,350 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Product' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Product' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,351 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,352 INFO sqlalchemy.engine.base.Engine PRAGMA index_list("Product")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA index_list("Product")
-    
+
 
     2018-10-28 22:19:08,353 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,354 INFO sqlalchemy.engine.base.Engine PRAGMA index_list("Product")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA index_list("Product")
-    
+
 
     2018-10-28 22:19:08,355 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,356 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Product' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Product' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,357 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,359 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("Region")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA table_info("Region")
-    
+
 
     2018-10-28 22:19:08,360 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,362 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Region' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Region' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,363 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,364 INFO sqlalchemy.engine.base.Engine PRAGMA foreign_key_list("Region")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA foreign_key_list("Region")
-    
+
 
     2018-10-28 22:19:08,379 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,380 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Region' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Region' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,381 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,382 INFO sqlalchemy.engine.base.Engine PRAGMA index_list("Region")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA index_list("Region")
-    
+
 
     2018-10-28 22:19:08,383 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,385 INFO sqlalchemy.engine.base.Engine PRAGMA index_list("Region")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA index_list("Region")
-    
+
 
     2018-10-28 22:19:08,386 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,387 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Region' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Region' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,388 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,389 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("Shipper")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA table_info("Shipper")
-    
+
 
     2018-10-28 22:19:08,390 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,392 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Shipper' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Shipper' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,393 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,395 INFO sqlalchemy.engine.base.Engine PRAGMA foreign_key_list("Shipper")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA foreign_key_list("Shipper")
-    
+
 
     2018-10-28 22:19:08,396 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,397 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Shipper' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Shipper' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,398 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,399 INFO sqlalchemy.engine.base.Engine PRAGMA index_list("Shipper")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA index_list("Shipper")
-    
+
 
     2018-10-28 22:19:08,400 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,401 INFO sqlalchemy.engine.base.Engine PRAGMA index_list("Shipper")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA index_list("Shipper")
-    
+
 
     2018-10-28 22:19:08,402 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,404 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Shipper' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Shipper' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,405 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,406 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("Supplier")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA table_info("Supplier")
-    
+
 
     2018-10-28 22:19:08,407 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,409 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Supplier' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Supplier' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,410 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,412 INFO sqlalchemy.engine.base.Engine PRAGMA foreign_key_list("Supplier")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA foreign_key_list("Supplier")
-    
+
 
     2018-10-28 22:19:08,413 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,414 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Supplier' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Supplier' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,415 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,417 INFO sqlalchemy.engine.base.Engine PRAGMA index_list("Supplier")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA index_list("Supplier")
-    
+
 
     2018-10-28 22:19:08,418 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,419 INFO sqlalchemy.engine.base.Engine PRAGMA index_list("Supplier")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA index_list("Supplier")
-    
+
 
     2018-10-28 22:19:08,420 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,421 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Supplier' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Supplier' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,422 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,424 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("Territory")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA table_info("Territory")
-    
+
 
     2018-10-28 22:19:08,425 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,426 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Territory' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Territory' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,427 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,430 INFO sqlalchemy.engine.base.Engine PRAGMA foreign_key_list("Territory")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA foreign_key_list("Territory")
-    
+
 
     2018-10-28 22:19:08,431 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,432 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Territory' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Territory' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,433 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,434 INFO sqlalchemy.engine.base.Engine PRAGMA index_list("Territory")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA index_list("Territory")
-    
+
 
     2018-10-28 22:19:08,435 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,437 INFO sqlalchemy.engine.base.Engine PRAGMA index_list("Territory")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA index_list("Territory")
-    
+
 
     2018-10-28 22:19:08,438 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,439 INFO sqlalchemy.engine.base.Engine PRAGMA index_info("sqlite_autoindex_Territory_1")
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:PRAGMA index_info("sqlite_autoindex_Territory_1")
-    
+
 
     2018-10-28 22:19:08,440 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     2018-10-28 22:19:08,441 INFO sqlalchemy.engine.base.Engine SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Territory' AND type = 'table'
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT sql FROM  (SELECT * FROM sqlite_master UNION ALL   SELECT * FROM sqlite_temp_master) WHERE name = 'Territory' AND type = 'table'
-    
+
 
     2018-10-28 22:19:08,442 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
 Now that we have some mappings set up, we can make use of `session.query()` help us query our database!
 
-#### Writing Basic Queries
+### Writing Basic Queries
 
 Let's use the `query()` object to get all the employees from the `'Employee'` table. 
 
@@ -1890,17 +1890,17 @@ for instance in session.query(Employee).order_by(Employee.HireDate):
 
     2018-10-28 22:28:23,210 INFO sqlalchemy.engine.base.Engine SELECT "Employee"."Id" AS "Employee_Id", "Employee"."LastName" AS "Employee_LastName", "Employee"."FirstName" AS "Employee_FirstName", "Employee"."Title" AS "Employee_Title", "Employee"."TitleOfCourtesy" AS "Employee_TitleOfCourtesy", "Employee"."BirthDate" AS "Employee_BirthDate", "Employee"."HireDate" AS "Employee_HireDate", "Employee"."Address" AS "Employee_Address", "Employee"."City" AS "Employee_City", "Employee"."Region" AS "Employee_Region", "Employee"."PostalCode" AS "Employee_PostalCode", "Employee"."Country" AS "Employee_Country", "Employee"."HomePhone" AS "Employee_HomePhone", "Employee"."Extension" AS "Employee_Extension", "Employee"."Photo" AS "Employee_Photo", "Employee"."Notes" AS "Employee_Notes", "Employee"."ReportsTo" AS "Employee_ReportsTo", "Employee"."PhotoPath" AS "Employee_PhotoPath" 
     FROM "Employee" ORDER BY "Employee"."HireDate"
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT "Employee"."Id" AS "Employee_Id", "Employee"."LastName" AS "Employee_LastName", "Employee"."FirstName" AS "Employee_FirstName", "Employee"."Title" AS "Employee_Title", "Employee"."TitleOfCourtesy" AS "Employee_TitleOfCourtesy", "Employee"."BirthDate" AS "Employee_BirthDate", "Employee"."HireDate" AS "Employee_HireDate", "Employee"."Address" AS "Employee_Address", "Employee"."City" AS "Employee_City", "Employee"."Region" AS "Employee_Region", "Employee"."PostalCode" AS "Employee_PostalCode", "Employee"."Country" AS "Employee_Country", "Employee"."HomePhone" AS "Employee_HomePhone", "Employee"."Extension" AS "Employee_Extension", "Employee"."Photo" AS "Employee_Photo", "Employee"."Notes" AS "Employee_Notes", "Employee"."ReportsTo" AS "Employee_ReportsTo", "Employee"."PhotoPath" AS "Employee_PhotoPath" 
     FROM "Employee" ORDER BY "Employee"."HireDate"
-    
+
 
     2018-10-28 22:28:23,212 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     Name: Leverling, Janet  Hired: 2024-04-01
     Name: Davolio, Nancy  Hired: 2024-05-01
@@ -1911,9 +1911,9 @@ for instance in session.query(Employee).order_by(Employee.HireDate):
     Name: King, Robert  Hired: 2026-01-02
     Name: Callahan, Laura  Hired: 2026-03-05
     Name: Dodsworth, Anne  Hired: 2026-11-15
-    
 
-#### Implcit JOINs using `.filter()`
+
+### Implicit JOINs using `.filter()`
 
 One great benefit of using `session.query()` to query our data is that we can easiy execute **_implicit joins_** by making use of the `.filter()` method. 
 
@@ -1945,18 +1945,18 @@ for p, c in session.query(Product, Category).filter(Product.CategoryId==Category
     2018-10-28 22:34:35,617 INFO sqlalchemy.engine.base.Engine SELECT "Product"."Id" AS "Product_Id", "Product"."ProductName" AS "Product_ProductName", "Product"."SupplierId" AS "Product_SupplierId", "Product"."CategoryId" AS "Product_CategoryId", "Product"."QuantityPerUnit" AS "Product_QuantityPerUnit", "Product"."UnitPrice" AS "Product_UnitPrice", "Product"."UnitsInStock" AS "Product_UnitsInStock", "Product"."UnitsOnOrder" AS "Product_UnitsOnOrder", "Product"."ReorderLevel" AS "Product_ReorderLevel", "Product"."Discontinued" AS "Product_Discontinued", "Category"."Id" AS "Category_Id", "Category"."CategoryName" AS "Category_CategoryName", "Category"."Description" AS "Category_Description" 
     FROM "Product", "Category" 
     WHERE "Product"."CategoryId" = "Category"."Id"
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:SELECT "Product"."Id" AS "Product_Id", "Product"."ProductName" AS "Product_ProductName", "Product"."SupplierId" AS "Product_SupplierId", "Product"."CategoryId" AS "Product_CategoryId", "Product"."QuantityPerUnit" AS "Product_QuantityPerUnit", "Product"."UnitPrice" AS "Product_UnitPrice", "Product"."UnitsInStock" AS "Product_UnitsInStock", "Product"."UnitsOnOrder" AS "Product_UnitsOnOrder", "Product"."ReorderLevel" AS "Product_ReorderLevel", "Product"."Discontinued" AS "Product_Discontinued", "Category"."Id" AS "Category_Id", "Category"."CategoryName" AS "Category_CategoryName", "Category"."Description" AS "Category_Description" 
     FROM "Product", "Category" 
     WHERE "Product"."CategoryId" = "Category"."Id"
-    
+
 
     2018-10-28 22:34:35,618 INFO sqlalchemy.engine.base.Engine ()
-    
+
 
     INFO:sqlalchemy.engine.base.Engine:()
-    
+
 
     Product Name: Chai  Category Name: Beverages
     Product Name: Chang  Category Name: Beverages
@@ -2035,8 +2035,8 @@ for p, c in session.query(Product, Category).filter(Product.CategoryId==Category
     Product Name: Rhönbräu Klosterbier  Category Name: Beverages
     Product Name: Lakkalikööri  Category Name: Beverages
     Product Name: Original Frankfurter grüne Soße  Category Name: Condiments
-    
 
-# Conclusion
+
+## Summary
 
 Great job! You've just used SQLAlchemy to work with a sample production database. Note that there are many, many more awesome things that SQLAlchemy can do, but they're outside the scope of this lesson.  However, if you're interested in learning more, don't be afraid to take a look at the [SQLAlchemy documentation](https://docs.sqlalchemy.org/en/latest/orm/tutorial.html) and work through some tutorials in your spare time!
