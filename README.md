@@ -1,5 +1,5 @@
 
-# Querying With SQLAlchemy
+# Querying with SQLAlchemy - Lab
 
 ## Introduction
 
