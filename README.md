@@ -245,7 +245,7 @@ Before we can make use of Object-Relational Mappings, we need to make sure that 
 In the cell below:
 
 * Import `MetaData` from `sqlalchemy`
-* Import `automap_base` from `sqlalchemy.ext.base`
+* Import `automap_base` from `sqlalchemy.ext.automap`
 * Create a `MetaData` object
 * Use the metadata object's `reflect` method on our `engine`
 * Call `automap_base` and set the `metadata` parameter to our `metadata`. Store the results returned inside of the variable `Base`
@@ -281,7 +281,7 @@ In the cell below:
 
 ### Implicit JOINs using `.filter()`
 
-One great benefit of using `session.query()` to query our data is that we can easiy execute **_implicit joins_** by making use of the `.filter()` method. 
+One great benefit of using `session.query()` to query our data is that we can easily execute **_implicit joins_** by making use of the `.filter()` method. 
 
 So far we've only explicitly specified mappings for the `Employee` and `Customer` classes.  We'll need to do this now for the `Product` and `Category` classes before we can use them with `session.query()`.
 
